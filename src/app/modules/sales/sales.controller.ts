@@ -1,0 +1,51 @@
+import httpStatus from 'http-status';
+import catchAsync from '../../utils/catchAsync';
+import sendResponse from '../../utils/sendResponse';
+import { SalesProductServices } from './sales.service';
+
+const createSalesProduct = catchAsync(async (req, res) => {
+  try {
+    const salseData = req.body;
+    const result =
+      await SalesProductServices.createSalesProductIntoDB(salseData);
+
+    sendResponse(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: 'Product Sales successfully',
+      data: result,
+    });
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (err: any) {
+    res.status(500).json({
+      success: false,
+      message: err.message,
+      error: err,
+    });
+  }
+});
+
+const getAllSalesProduct = catchAsync(async (req, res) => {
+  try {
+    const result = await SalesProductServices.getAllSalesProductIntoDB();
+
+    sendResponse(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: 'Product Sales successfully',
+      data: result,
+    });
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (err: any) {
+    res.status(500).json({
+      success: false,
+      message: err.message,
+      error: err,
+    });
+  }
+});
+
+export const SalesProductController = {
+  createSalesProduct,
+  getAllSalesProduct,
+};

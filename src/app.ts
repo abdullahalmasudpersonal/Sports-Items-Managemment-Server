@@ -18,7 +18,7 @@ app.get('/', (req, res) => {
 /* app.use(cors({ origin: 'http://localhost:5173', credentials: true })); */
 
 // application routes
-//app.use('/api/v1', router);
+app.use('/api', router);
 
 //Not Found
 app.use(notFound);
