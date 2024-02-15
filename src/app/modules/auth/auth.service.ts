@@ -1,9 +1,10 @@
 import httpStatus from 'http-status';
-import AppError from '../../errors/appError';
+//import AppError from '../../errors/appError';
 import { User } from '../user/user.model';
 import { TLoginUser } from './auth.interface';
 import config from '../../config';
 import { createToken, verifyToken } from './auth.utils';
+import AppError from '../../errors/AppError';
 
 const loginUserInto = async (payload: TLoginUser) => {
   const user = await User.isUserExistsByUsername(payload.username);
