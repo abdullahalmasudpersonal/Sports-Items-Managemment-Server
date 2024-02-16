@@ -1,12 +1,13 @@
 import httpStatus from 'http-status';
 import { TUser } from './user.interface';
-import { User } from './user.model';
-import { generateSellerId } from './user.utils';
+import { generateBranchManagerId, generateSellerId } from './user.utils';
 import config from '../../config';
 import AppError from '../../errors/AppError';
 import { TSeller } from '../seller/seller.interface';
 import { Seller } from '../seller/seller.model';
 import mongoose from 'mongoose';
+import { User } from './user.model';
+import { BranchManager } from '../branchManager/branchManager.model';
 
 /* const registerUserIntoDB = async (userData: TUser) => {
   if (await User.isUserExistsByUsername(userData.username)) {
@@ -44,8 +45,11 @@ import mongoose from 'mongoose';
 }; */
 
 const createSellerIntoDB = async (password: string, payload: TSeller) => {
-  if (await User.isUserExistsByCustomId(payload.userId)) {
-    throw new AppError(httpStatus.INTERNAL_SERVER_ERROR, 'User alrady exists!');
+  if (await Seller.isSellerExistsByUsername(payload.username)) {
+    throw new AppError(
+      httpStatus.INTERNAL_SERVER_ERROR,
+      'Seller alrady exists!',
+    );
   }
 
   const sellerData: Partial<TUser> = {};
@@ -92,6 +96,65 @@ const createSellerIntoDB = async (password: string, payload: TSeller) => {
   }
 };
 
+const createBranchManagerIntoDB = async (
+  password: string,
+  payload: TSeller,
+) => {
+  if (await BranchManager.isBranchManagerExistsByUsername(payload.username)) {
+    throw new AppError(
+      httpStatus.INTERNAL_SERVER_ERROR,
+      'This branch manager alrady exists!',
+    );
+  }
+
+  const branchManagerData: Partial<TUser> = {};
+
+  branchManagerData.password = password || (config.default_password as string);
+
+  branchManagerData.role = 'branchManager';
+  branchManagerData.username = payload.username;
+  branchManagerData.email = payload.email;
+
+  const session = await mongoose.startSession();
+
+  try {
+    session.startTransaction();
+
+    branchManagerData.userId = await generateBranchManagerId();
+
+    // create a user (transaction-1)
+    const newUser = await User.create([branchManagerData], { session });
+    if (!newUser.length) {
+      throw new AppError(httpStatus.BAD_REQUEST, 'Failed to create user');
+    }
+
+    // set id , _id as user
+    payload.userId = newUser[0].userId;
+    payload.user = newUser[0]._id; //reference _id
+
+    // create a BranchManager (transaction-2)
+    const newBranchManager = await BranchManager.create([payload], { session });
+    if (!newBranchManager.length) {
+      throw new AppError(
+        httpStatus.BAD_REQUEST,
+        'Failed to create branch manager',
+      );
+    }
+
+    await session.commitTransaction();
+    await session.endSession();
+
+    return newBranchManager;
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (err: any) {
+    await session.abortTransaction();
+    await session.endSession();
+    throw new Error(err);
+  }
+};
+
 export const UserServices = {
   createSellerIntoDB,
+  createBranchManagerIntoDB,
 };

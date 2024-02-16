@@ -58,7 +58,31 @@ const createSeller = catchAsync(async (req, res) => {
   }
 });
 
+const createBranchManager = catchAsync(async (req, res) => {
+  try {
+    const { password, branchManager: branchManagerData } = req.body;
+    const result = await UserServices.createBranchManagerIntoDB(
+      password,
+      branchManagerData,
+    );
+    sendResponse(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: 'Branch manager registered successfully',
+      data: result,
+    });
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (err: any) {
+    res.status(500).json({
+      success: false,
+      message: err.message,
+      error: err,
+    });
+  }
+});
+
 export const UserControllers = {
   registerUser,
   createSeller,
+  createBranchManager,
 };

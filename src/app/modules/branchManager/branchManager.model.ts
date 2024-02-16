@@ -1,7 +1,11 @@
 import { Schema, model } from 'mongoose';
-import { SellerModel, TSeller, TSellerName } from './seller.interface';
+import {
+  BranchManagerModel,
+  TBranchManager,
+  TBranchManagerName,
+} from './branchManager.interface';
 
-const userNameSchema = new Schema<TSellerName>({
+const branchManagerNameSchema = new Schema<TBranchManagerName>({
   firstName: {
     type: String,
     required: [true, 'First Name is required'],
@@ -20,7 +24,7 @@ const userNameSchema = new Schema<TSellerName>({
   },
 });
 
-const sellerSchema = new Schema<TSeller, SellerModel>(
+const branchManagerSchema = new Schema<TBranchManager, BranchManagerModel>(
   {
     userId: {
       type: String,
@@ -39,7 +43,7 @@ const sellerSchema = new Schema<TSeller, SellerModel>(
       unique: true,
     },
     name: {
-      type: userNameSchema,
+      type: branchManagerNameSchema,
       required: [true, 'Name is required'],
     },
     email: {
@@ -85,10 +89,13 @@ const sellerSchema = new Schema<TSeller, SellerModel>(
   },
 );
 
-sellerSchema.statics.isSellerExistsByUsername = async function (
+branchManagerSchema.statics.isBranchManagerExistsByUsername = async function (
   username: string,
 ) {
-  return await Seller.findOne({ username });
+  return await BranchManager.findOne({ username });
 };
 
-export const Seller = model<TSeller, SellerModel>('Seller', sellerSchema);
+export const BranchManager = model<TBranchManager, BranchManagerModel>(
+  'BranchManager',
+  branchManagerSchema,
+);

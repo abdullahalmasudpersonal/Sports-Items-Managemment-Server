@@ -12,7 +12,7 @@ export interface TUser {
 }
 
 export interface UserModel extends Model<TUser> {
-  isUserExistsByCustomId(userId: string): Promise<TUser | null>;
+  isUserExistsByUsername(username: string): Promise<TUser | null>;
 }
 
 export type TUserRole = keyof typeof USER_ROLE;

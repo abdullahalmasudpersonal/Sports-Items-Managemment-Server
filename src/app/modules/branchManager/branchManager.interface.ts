@@ -1,16 +1,16 @@
 import { Model, Types } from 'mongoose';
 
-export interface TSellerName {
+export interface TBranchManagerName {
   firstName: string;
   middleName?: string;
   lastName: string;
 }
 
-export interface TSeller {
+export interface TBranchManager {
   userId: string;
   user: Types.ObjectId;
   username: string;
-  name: TSellerName;
+  name: TBranchManagerName;
   email: string;
   gender: 'male' | 'female' | 'other';
   bloodGroup: 'A+' | 'A-' | 'B+' | 'B-' | 'AB+' | 'AB-' | 'O+' | 'O-';
@@ -21,7 +21,9 @@ export interface TSeller {
   isDeleted: boolean;
 }
 
-export interface SellerModel extends Model<TSeller> {
-  // eslint-disable-next-line no-unused-vars
-  isSellerExistsByUsername(username: string): Promise<TSeller | null>;
+export interface BranchManagerModel extends Model<TBranchManager> {
+  isBranchManagerExistsByUsername(
+    // eslint-disable-next-line no-unused-vars
+    username: string,
+  ): Promise<TBranchManager | null>;
 }

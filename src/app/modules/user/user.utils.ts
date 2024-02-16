@@ -51,3 +51,31 @@ export const generateSellerId = async () => {
   incrementId = `S-${incrementId}`;
   return incrementId;
 };
+
+const findLastBranchManagerId = async () => {
+  const lastBranchManager = await User.findOne(
+    {
+      role: 'branchManager',
+    },
+    {
+      userId: 1,
+      _id: 0,
+    },
+  )
+    .sort({
+      createdAt: -1,
+    })
+    .lean();
+  return lastBranchManager?.userId
+    ? lastBranchManager.userId.substring(2)
+    : undefined;
+};
+
+export const generateBranchManagerId = async () => {
+  const currentId = (await findLastBranchManagerId()) || (0).toString();
+
+  let incrementId = (Number(currentId) + 1).toString().padStart(4, '0');
+
+  incrementId = `B-${incrementId}`;
+  return incrementId;
+};
