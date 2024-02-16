@@ -12,7 +12,14 @@ export interface TUser {
 }
 
 export interface UserModel extends Model<TUser> {
+  // eslint-disable-next-line no-unused-vars
   isUserExistsByUsername(username: string): Promise<TUser | null>;
+  isPasswordMatched(
+    // eslint-disable-next-line no-unused-vars
+    plainTextPassword: string,
+    // eslint-disable-next-line no-unused-vars
+    hashedPassword: string,
+  ): Promise<boolean>;
 }
 
 export type TUserRole = keyof typeof USER_ROLE;

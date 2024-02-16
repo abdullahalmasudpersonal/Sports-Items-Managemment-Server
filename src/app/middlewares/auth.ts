@@ -41,10 +41,10 @@ const auth = (...requiredRoles: TUserRole[]) => {
       throw new AppError(httpStatus.UNAUTHORIZED, 'Unauthorized');
     }
 
-    const { role, userId, iat } = decoded;
+    const { role, username /* iat */ } = decoded;
 
     // checking if the user is exist
-    const user = await User.isUserExistsByCustomId(userId);
+    const user = await User.isUserExistsByUsername(username);
 
     if (!user) {
       throw new AppError(httpStatus.NOT_FOUND, 'This user is not found !');
@@ -64,7 +64,7 @@ const auth = (...requiredRoles: TUserRole[]) => {
       throw new AppError(httpStatus.FORBIDDEN, 'This user is blocked ! !');
     }
 
-    if (
+    /*     if (
       user.passwordChangedAt &&
       User.isJWTIssuedBeforePasswordChanged(
         user.passwordChangedAt,
@@ -72,7 +72,7 @@ const auth = (...requiredRoles: TUserRole[]) => {
       )
     ) {
       throw new AppError(httpStatus.UNAUTHORIZED, 'You are not authorized !');
-    }
+    } */
 
     if (requiredRoles && !requiredRoles.includes(role)) {
       throw new AppError(
