@@ -26,10 +26,10 @@ export const generateAdminId = async () => {
   return incrementId;
 };
 
-const findLastSalesManId = async () => {
-  const lastAdmin = await User.findOne(
+const findLastSellerId = async () => {
+  const lastSeller = await User.findOne(
     {
-      role: 'salesMan',
+      role: 'seller',
     },
     {
       userId: 1,
@@ -40,11 +40,11 @@ const findLastSalesManId = async () => {
       createdAt: -1,
     })
     .lean();
-  return lastAdmin?.userId ? lastAdmin.userId.substring(2) : undefined;
+  return lastSeller?.userId ? lastSeller.userId.substring(2) : undefined;
 };
 
-export const generateSalesManId = async () => {
-  const currentId = (await findLastSalesManId()) || (0).toString();
+export const generateSellerId = async () => {
+  const currentId = (await findLastSellerId()) || (0).toString();
 
   let incrementId = (Number(currentId) + 1).toString().padStart(4, '0');
 

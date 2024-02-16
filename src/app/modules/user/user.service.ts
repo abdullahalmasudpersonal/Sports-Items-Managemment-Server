@@ -1,21 +1,23 @@
 import httpStatus from 'http-status';
 import { TUser } from './user.interface';
 import { User } from './user.model';
-import { generateAdminId, generateSalesManId } from './user.utils';
-import { createToken } from '../auth/auth.utils';
+import { generateSellerId } from './user.utils';
 import config from '../../config';
 import AppError from '../../errors/AppError';
+import { TSeller } from '../seller/seller.interface';
+import { Seller } from '../seller/seller.model';
+import mongoose from 'mongoose';
 
-const registerUserIntoDB = async (userData: TUser) => {
+/* const registerUserIntoDB = async (userData: TUser) => {
   if (await User.isUserExistsByUsername(userData.username)) {
     throw new AppError(httpStatus.INTERNAL_SERVER_ERROR, 'User alrady Exists');
   }
 
-  if (userData.role === 'admin') {
+     if (userData.role === 'admin') {
     userData.userId = await generateAdminId();
   } else {
     userData.userId = await generateSalesManId();
-  }
+  } 
 
   const result = await User.create(userData);
 
@@ -39,8 +41,57 @@ const registerUserIntoDB = async (userData: TUser) => {
     config.jwt_refresh_expires_in as string,
   );
   return { result, accessToken, refreshToken };
+}; */
+
+const createSellerIntoDB = async (password: string, payload: TSeller) => {
+  if (await User.isUserExistsByCustomId(payload.userId)) {
+    throw new AppError(httpStatus.INTERNAL_SERVER_ERROR, 'User alrady exists!');
+  }
+
+  const sellerData: Partial<TUser> = {};
+
+  sellerData.password = password || (config.default_password as string);
+
+  //set seller role
+  sellerData.role = 'seller';
+  // set seller username & email
+  sellerData.username = payload.username;
+  sellerData.email = payload.email;
+
+  const session = await mongoose.startSession();
+  try {
+    session.startTransaction();
+
+    sellerData.userId = await generateSellerId();
+
+    // create a user (transaction-1)
+    const newUser = await User.create([sellerData], { session });
+    if (!newUser.length) {
+      throw new AppError(httpStatus.BAD_REQUEST, 'Failed to create user');
+    }
+
+    // set id , _id as user
+    payload.userId = newUser[0].userId;
+    payload.user = newUser[0]._id; //reference _id
+
+    // create a Seller (transaction-2)
+    const newSeller = await Seller.create([payload], { session });
+    if (!newSeller.length) {
+      throw new AppError(httpStatus.BAD_REQUEST, 'Failed to create seller');
+    }
+
+    await session.commitTransaction();
+    await session.endSession();
+
+    return newSeller;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (err: any) {
+    await session.abortTransaction();
+    await session.endSession();
+    throw new Error(err);
+  }
 };
 
 export const UserServices = {
-  registerUserIntoDB,
+  createSellerIntoDB,
 };

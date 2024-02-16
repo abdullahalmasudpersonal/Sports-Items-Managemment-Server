@@ -1,26 +1,8 @@
 import { Schema, model } from 'mongoose';
-import { TUser, TUserName, UserModel } from './user.interface';
+import { TUser, UserModel } from './user.interface';
 import bcrypt from 'bcrypt';
 import config from '../../config';
-
-const userNameSchema = new Schema<TUserName>({
-  firstName: {
-    type: String,
-    required: [true, 'First Name is required'],
-    trim: true,
-    maxlength: [20, 'Name can not be more than 20 characters'],
-  },
-  middleName: {
-    type: String,
-    trim: true,
-  },
-  lastName: {
-    type: String,
-    trim: true,
-    required: [true, 'Last Name is required'],
-    maxlength: [20, 'Name can not be more than 20 characters'],
-  },
-});
+import { UserStatus } from './user.constant';
 
 const userSchema = new Schema<TUser, UserModel>(
   {
@@ -31,12 +13,8 @@ const userSchema = new Schema<TUser, UserModel>(
     },
     username: {
       type: String,
-      required: true,
+      required: [true, 'Username is required'],
       unique: true,
-    },
-    name: {
-      type: userNameSchema,
-      required: true,
     },
     email: {
       type: String,
@@ -50,19 +28,12 @@ const userSchema = new Schema<TUser, UserModel>(
     },
     role: {
       type: String,
-      enum: ['superAdmin','admin','branchManager','seller'],
+      enum: ['superAdmin', 'admin', 'branchManager', 'seller'],
     },
-    gender: {
+    status: {
       type: String,
-      enum: ['male', 'female', 'other'],
-    },
-    contactNo: {
-      type: String,
-      required: true,
-    },
-    profileImg: {
-      type: String,
-      required: true,
+      enum: UserStatus,
+      default: 'in-progress',
     },
     isDeleted: {
       type: Boolean,
@@ -73,17 +44,6 @@ const userSchema = new Schema<TUser, UserModel>(
     timestamps: true,
   },
 );
-
-userSchema.statics.isUserExistsByUsername = async function (username: string) {
-  return await User.findOne({ username }).select('+password');
-};
-
-userSchema.statics.isPasswordMatched = async function (
-  plainTextPassword,
-  hashedPassword,
-) {
-  return await bcrypt.compare(plainTextPassword, hashedPassword);
-};
 
 userSchema.pre('save', async function (next) {
   // eslint-disable-next-line @typescript-eslint/no-this-alias
@@ -100,5 +60,16 @@ userSchema.post('save', function (doc, next) {
   doc.password = '';
   next();
 });
+
+userSchema.statics.isUserExistsByCustomId = async function (userId: string) {
+  return await User.findOne({ userId }).select('+password');
+};
+
+userSchema.statics.isPasswordMatched = async function (
+  plainTextPassword,
+  hashedPassword,
+) {
+  return await bcrypt.compare(plainTextPassword, hashedPassword);
+};
 
 export const User = model<TUser, UserModel>('User', userSchema);

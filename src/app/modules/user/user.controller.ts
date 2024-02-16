@@ -2,11 +2,11 @@ import httpStatus from 'http-status';
 import catchAsync from '../../utils/catchAsync';
 import sendResponse from '../../utils/sendResponse';
 import { UserServices } from './user.service';
-import config from '../../config';
 
 const registerUser = catchAsync(async (req, res) => {
   try {
-    const userData = req.body;
+    /*     const userData = req.body;
+    console.log(req.body);
     const { result, refreshToken, accessToken } =
       await UserServices.registerUserIntoDB(userData);
 
@@ -25,9 +25,28 @@ const registerUser = catchAsync(async (req, res) => {
         username: result?.username,
         email: result?.email,
         role: result?.role,
-        contactNo: result?.contactNo,
         accessToken,
       },
+    }); */
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (err: any) {
+    res.status(500).json({
+      success: false,
+      message: err.message,
+      error: err,
+    });
+  }
+});
+
+const createSeller = catchAsync(async (req, res) => {
+  try {
+    const { password, seller: sellerData } = req.body;
+    const result = await UserServices.createSellerIntoDB(password, sellerData);
+    sendResponse(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: 'Seller registered successfully',
+      data: result,
     });
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (err: any) {
@@ -41,4 +60,5 @@ const registerUser = catchAsync(async (req, res) => {
 
 export const UserControllers = {
   registerUser,
+  createSeller,
 };
