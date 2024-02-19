@@ -6,7 +6,7 @@ export interface TProduct {
   code: string;
   price: number;
   quantity: number;
-  status: string;
+  size: string;
   brand: string;
   features: string;
   description: string;

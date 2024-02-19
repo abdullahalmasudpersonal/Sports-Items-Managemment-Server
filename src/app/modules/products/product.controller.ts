@@ -2,7 +2,7 @@ import httpStatus from 'http-status';
 import catchAsync from '../../utils/catchAsync';
 import sendResponse from '../../utils/sendResponse';
 import { PorductServices } from './product.service';
-import AppError from '../../errors/appError';
+import AppError from '../../errors/AppError';
 
 const createProduct = catchAsync(async (req, res) => {
   try {

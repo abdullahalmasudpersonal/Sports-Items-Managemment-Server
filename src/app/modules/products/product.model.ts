@@ -28,6 +28,10 @@ const productSchema = new Schema<TProduct, ProductModel>(
       required: true,
       unique: false,
     },
+    size: {
+      type: String,
+      required:true,
+    },
     brand: {
       type: String,
       required: true,
