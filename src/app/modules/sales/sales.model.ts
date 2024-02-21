@@ -3,7 +3,31 @@ import { SalesProductModel, TsalesProduct } from './sales.interface';
 
 const salesProductSchema = new Schema<TsalesProduct, TsalesProduct>(
   {
+    seller: {
+      type: Schema.Types.ObjectId,
+      ref: 'User',
+    },
     name: {
+      type: String,
+      required: true,
+    },
+    branch: {
+      type: String,
+      required: true,
+    },
+    brand: {
+      type: String,
+      required: true,
+    },
+    size: {
+      type: String,
+      required: true,
+    },
+    price: {
+      type: Number,
+      required: true,
+    },
+    code: {
       type: String,
       required: true,
     },
@@ -15,6 +39,7 @@ const salesProductSchema = new Schema<TsalesProduct, TsalesProduct>(
       type: Number,
       required: true,
     },
+    date: { type: Date, required: true },
   },
   {
     timestamps: true,

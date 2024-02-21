@@ -29,10 +29,14 @@ const getAllSalesProduct = catchAsync(async (req, res) => {
   try {
     const result = await SalesProductServices.getAllSalesProductIntoDB();
 
+    const re = result.map((res) => res.seller);
+
+    const ress = re.map((rs) => rs._id);
+
     sendResponse(res, {
       statusCode: httpStatus.OK,
       success: true,
-      message: 'Product Sales successfully',
+      message: 'Get all sales product successfully',
       data: result,
     });
     // eslint-disable-next-line @typescript-eslint/no-explicit-any

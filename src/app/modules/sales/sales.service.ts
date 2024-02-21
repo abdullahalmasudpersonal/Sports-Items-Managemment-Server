@@ -7,7 +7,8 @@ const createSalesProductIntoDB = async (salseData: TsalesProduct) => {
 };
 
 const getAllSalesProductIntoDB = async () => {
-  const result = await SalesProduct.find().sort({ date: -1 });
+  const result = await SalesProduct.find() /* .sort({ date: -1 }) */
+    .populate('seller');
   return result;
 };
 

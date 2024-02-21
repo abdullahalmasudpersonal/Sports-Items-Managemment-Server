@@ -7,7 +7,7 @@ const router = Router();
 
 router.get(
   '/',
-  auth(USER_ROLE.superAdmin, USER_ROLE.branchManager),
+  auth(USER_ROLE.superAdmin, USER_ROLE.branchManager, USER_ROLE.seller),
   ProductControllers.getAllProduct,
 );
 
