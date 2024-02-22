@@ -1,10 +1,10 @@
 import { Seller } from './seller.model';
 
-const createSellerIntoDB = async (seller: string) => {
-  const result = await Seller.create(seller);
+const getAllSellerIntoDB = async () => {
+  const result = await Seller.find();
   return result;
 };
 
 export const SellerServices = {
-  createSellerIntoDB,
+  getAllSellerIntoDB,
 };
