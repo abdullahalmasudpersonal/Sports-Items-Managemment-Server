@@ -29,9 +29,9 @@ const getAllSalesProduct = catchAsync(async (req, res) => {
   try {
     const result = await SalesProductServices.getAllSalesProductIntoDB();
 
-    const re = result.map((res) => res.seller);
-
-    const ress = re.map((rs) => rs._id);
+    /// Importent code
+    //const re = result.map((res) => res.seller);
+    // const ress = re.map((rs) => rs._id);
 
     sendResponse(res, {
       statusCode: httpStatus.OK,
@@ -49,7 +49,33 @@ const getAllSalesProduct = catchAsync(async (req, res) => {
   }
 });
 
+const getMySales = catchAsync(async (req, res) => {
+  try {
+    const { _id, userId, role } = req.user;
+    const result = await SalesProductServices.getMySalesProductIntoDB(
+      _id,
+      userId,
+      role,
+    );
+
+    sendResponse(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: `Get my sales product successfully${result.length}`,
+      data: result,
+    });
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (err: any) {
+    res.status(500).json({
+      success: false,
+      message: err.message,
+      error: err,
+    });
+  }
+});
+
 export const SalesProductController = {
   createSalesProduct,
   getAllSalesProduct,
+  getMySales,
 };
