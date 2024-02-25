@@ -2,6 +2,7 @@ import { Model, Types } from 'mongoose';
 
 export interface TsalesProduct {
   seller: Types.ObjectId;
+  invoice: string;
   name: string;
   branch: string;
   brand: string;

@@ -7,6 +7,11 @@ const salesProductSchema = new Schema<TsalesProduct, TsalesProduct>(
       type: Schema.Types.ObjectId,
       ref: 'User',
     },
+    invoice: {
+      type: String,
+      required: true,
+      unique: true,
+    },
     name: {
       type: String,
       required: true,

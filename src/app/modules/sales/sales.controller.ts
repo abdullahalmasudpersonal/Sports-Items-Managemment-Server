@@ -51,12 +51,8 @@ const getAllSalesProduct = catchAsync(async (req, res) => {
 
 const getMySales = catchAsync(async (req, res) => {
   try {
-    const { _id, userId, role } = req.user;
-    const result = await SalesProductServices.getMySalesProductIntoDB(
-      _id,
-      userId,
-      role,
-    );
+    const { _id } = req.user;
+    const result = await SalesProductServices.getMySalesProductIntoDB(_id);
 
     sendResponse(res, {
       statusCode: httpStatus.OK,
