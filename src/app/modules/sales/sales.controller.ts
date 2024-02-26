@@ -31,7 +31,10 @@ const createSalesProduct = catchAsync(async (req, res) => {
 
 const getAllSalesProduct = catchAsync(async (req, res) => {
   try {
-    const result = await SalesProductServices.getAllSalesProductIntoDB();
+    console.log(req.query);
+    const result = await SalesProductServices.getAllSalesProductIntoDB(
+      req.query,
+    );
 
     /// Importent code
     //const re = result.map((res) => res.seller);

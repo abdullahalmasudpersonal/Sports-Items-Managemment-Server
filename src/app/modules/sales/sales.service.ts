@@ -22,13 +22,23 @@ const createSalesProductIntoDB = async (
     salseData.invoice = await generateSESalesInvoiceNumber();
   }
 
+  salseData.sellerRole = role;
   salseData.seller = _id as Types.ObjectId;
   const result = await SalesProduct.create(salseData);
   return result;
 };
 
-const getAllSalesProductIntoDB = async () => {
-  const result = await SalesProduct.find().sort({ date: -1 });
+const getAllSalesProductIntoDB = async (query: Record<string, unknown>) => {
+  const searchSalesFields = ['createdAt'];
+  let searchTerm = {};
+  if (query?.searchTerm) {
+    searchTerm = query?.searchTerm as number;
+  }
+  const result = await SalesProduct.find({
+    $or: searchSalesFields.map((field) => ({
+      [field]: { searchTerm },
+    })),
+  }).sort({ date: -1 });
   /* .populate('seller') */ return result;
 };
 

@@ -8,6 +8,10 @@ const salesProductSchema = new Schema<TsalesProduct, TsalesProduct>(
       ref: 'User',
       required: true,
     },
+    sellerRole: {
+      type: String,
+      required: true,
+    },
     invoice: {
       type: String,
       required: true,
