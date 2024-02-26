@@ -6,8 +6,12 @@ import { SalesProductServices } from './sales.service';
 const createSalesProduct = catchAsync(async (req, res) => {
   try {
     const salseData = req.body;
-    const result =
-      await SalesProductServices.createSalesProductIntoDB(salseData);
+    const { role, _id } = req.user;
+    const result = await SalesProductServices.createSalesProductIntoDB(
+      salseData,
+      role,
+      _id,
+    );
 
     sendResponse(res, {
       statusCode: httpStatus.OK,

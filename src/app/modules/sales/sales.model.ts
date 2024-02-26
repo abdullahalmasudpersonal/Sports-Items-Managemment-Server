@@ -6,6 +6,7 @@ const salesProductSchema = new Schema<TsalesProduct, TsalesProduct>(
     seller: {
       type: Schema.Types.ObjectId,
       ref: 'User',
+      required: true,
     },
     invoice: {
       type: String,
