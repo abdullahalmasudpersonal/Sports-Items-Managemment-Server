@@ -28,17 +28,17 @@ const createSalesProductIntoDB = async (
   return result;
 };
 
-const getAllSalesProductIntoDB = async (query: Record<string, unknown>) => {
-  const searchSalesFields = ['createdAt'];
-  let searchTerm = {};
+const getAllSalesProductIntoDB = async (/* query: Record<string, unknown> */) => {
+/*   const searchSalesFields = ['name'];
+  let searchTerm = '';
   if (query?.searchTerm) {
-    searchTerm = query?.searchTerm as number;
-  }
-  const result = await SalesProduct.find({
+    searchTerm = query?.searchTerm as string;
+  } */
+  const result = await SalesProduct.find(/* {
     $or: searchSalesFields.map((field) => ({
-      [field]: { searchTerm },
+      [field]: {$regex:searchTerm, $options:'i' },
     })),
-  }).sort({ date: -1 });
+  } */).sort({ date: -1 });
   /* .populate('seller') */ return result;
 };
 
